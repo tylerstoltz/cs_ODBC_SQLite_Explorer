@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cs_ODBC_SQLite_Explorer", "cs_ODBC_SQLite_Explorer.csproj", "{48B97F64-44A8-3B94-16A1-BECBBBC0AD4C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48B97F64-44A8-3B94-16A1-BECBBBC0AD4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B97F64-44A8-3B94-16A1-BECBBBC0AD4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B97F64-44A8-3B94-16A1-BECBBBC0AD4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B97F64-44A8-3B94-16A1-BECBBBC0AD4C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F39B0313-FD03-4C8C-9ECE-49E86CD5755C}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,57 @@
+<Window x:Class="cs_ODBC_SQLite_Explorer.TableSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Select Tables and Row Limit" Height="550" Width="450"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        ResizeMode="CanResizeWithGrip">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5">
+             <Label Content="Filter:" VerticalAlignment="Center"/>
+             <TextBox Name="FilterTextBox" Width="200" VerticalAlignment="Center" TextChanged="FilterTextBox_TextChanged"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
+             <Label Content="Load Template:" VerticalAlignment="Center"/>
+             <ComboBox Name="TemplateComboBox" Width="200" VerticalAlignment="Center" DisplayMemberPath="Name" SelectionChanged="TemplateComboBox_SelectionChanged"/>
+             <Button Content="Save As..." Name="SaveTemplateButton" Margin="5,0,0,0" VerticalAlignment="Center" Click="SaveTemplateButton_Click"/>
+        </StackPanel>
+
+        <CheckBox Grid.Row="2" Name="SelectAllCheckBox" Content="Select/Deselect All Visible" Margin="0,0,0,5"
+                  Checked="SelectAllCheckBox_Checked" Unchecked="SelectAllCheckBox_Unchecked" IsThreeState="True"/>
+
+        <ListBox Grid.Row="3" Name="TableListBox" SelectionMode="Extended" SelectionChanged="TableListBox_SelectionChanged"
+                 PreviewMouseLeftButtonDown="TableListBox_PreviewMouseLeftButtonDown">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                     <CheckBox IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}"
+                               IsHitTestVisible="False">
+                         <TextBlock Text="{Binding}"/>
+                     </CheckBox>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,10,0,10">
+            <Label Content="Max rows per table (0 for all):" VerticalAlignment="Center"/>
+            <TextBox Name="RowLimitTextBox" Width="80" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK" Name="OkButton" Width="75" Margin="5" Click="OkButton_Click" IsDefault="True"/>
+            <Button Content="Cancel" Name="CancelButton" Width="75" Margin="5" Click="CancelButton_Click" IsCancel="True"/>
+        </StackPanel>
+
+    </Grid>
+</Window> 
