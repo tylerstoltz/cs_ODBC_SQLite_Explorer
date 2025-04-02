@@ -32,7 +32,9 @@ public partial class MainWindow : Window
     // private string? _provideXConnectionString; // Store the DSN directly in DataService now
     private List<string>? _selectedTables = null; // Store selected tables
     private int _selectedRowLimit = 0; // Store selected row limit
-    private const string OdbcDsn = "DSN=SOTAMAS90;"; // Define DSN constant
+    // Removed hardcoded DSN constant
+    // private const string OdbcDsn = "DSN=SOTAMAS90;"; // Define DSN constant
+    private string _selectedDsn = string.Empty; // Store the selected DSN
     private const int DefaultRowLimit = 1000; // Define default row limit
 
     // For Query History
@@ -116,9 +118,33 @@ public partial class MainWindow : Window
     {
         try
         {
-            // No ConfigManager needed
+            // Get all available DSNs and have the user select one
+            var dsnList = GetAvailableDsns();
+            if (dsnList.Count == 0)
+            {
+                MessageBox.Show("No ODBC DSNs found on this system. Please configure at least one DSN in the ODBC Data Source Administrator.", 
+                    "No DSNs Found", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            // Show DSN selection window
+            var dsnSelectionWindow = new DsnSelectionWindow(dsnList)
+            {
+                Owner = this
+            };
+
+            bool? dsnDialogResult = dsnSelectionWindow.ShowDialog();
+            if (dsnDialogResult != true || string.IsNullOrEmpty(dsnSelectionWindow.SelectedDsn))
+            {
+                // User cancelled or didn't select a DSN
+                return false;
+            }
+
+            _selectedDsn = $"DSN={dsnSelectionWindow.SelectedDsn};";
+            
+            // Initialize DataService with the selected DSN
             Debug.WriteLine("Initializing DataService...");
-            _dataService = new DataService(OdbcDsn);
+            _dataService = new DataService(_selectedDsn);
 
             // Connect to ODBC (triggers login prompt)
             ObjectExplorerTreeView.Items.Clear();
@@ -1454,5 +1480,57 @@ public partial class MainWindow : Window
                 }
             }
         }));
+    }
+
+    // Method to get all available DSNs from the Windows ODBC Data Source Administrator
+    private List<string> GetAvailableDsns()
+    {
+        var dsnList = new List<string>();
+        
+        try
+        {
+            // Get User DSNs
+            using (var odbcConnection = new System.Data.Odbc.OdbcConnection())
+            {
+                var factoryInfo = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\ODBC\\ODBCINST.INI\\ODBC Drivers");
+                if (factoryInfo != null)
+                {
+                    var odbcDrivers = factoryInfo.GetValueNames();
+                    
+                    // Get User DSNs
+                    var userDsnKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\ODBC\\ODBC.INI\\ODBC Data Sources");
+                    if (userDsnKey != null)
+                    {
+                        foreach (var dsnName in userDsnKey.GetValueNames())
+                        {
+                            dsnList.Add(dsnName);
+                        }
+                    }
+                    
+                    // Get System DSNs
+                    var systemDsnKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\ODBC\\ODBC.INI\\ODBC Data Sources");
+                    if (systemDsnKey != null)
+                    {
+                        foreach (var dsnName in systemDsnKey.GetValueNames())
+                        {
+                            // Add only if not already in the list (avoid duplicates)
+                            if (!dsnList.Contains(dsnName))
+                            {
+                                dsnList.Add(dsnName);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            Debug.WriteLine($"Found {dsnList.Count} ODBC DSNs");
+            return dsnList.OrderBy(dsn => dsn).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error getting DSNs: {ex}");
+            MessageBox.Show($"Error retrieving ODBC DSNs: {ex.Message}", "DSN Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return new List<string>();
+        }
     }
 }

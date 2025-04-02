@@ -133,10 +133,7 @@ These files can be placed in any directory on the target machine. The applicatio
 - .NET 9.0 Runtime
 - System.Data.Odbc (9.0.3)
 - System.Data.SQLite.Core (1.0.119)
-- ### Valid ODBC DSN configuration for your data source - update this in `MainWindow.xaml.cs`
-```cs
-private const string OdbcDsn = "DSN=SOTAMAS90;"; // Define DSN constant
-```
+- Valid ODBC DSN configuration for your data source
 
 ## Project Information
 - **Project Name**: ODBC Explorer (cs_ODBC_SQLite_Explorer)
